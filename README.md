@@ -1,6 +1,6 @@
 # Nikolai
 
-Backend scaffolding for the Nikolai blog is now located under `apps/api`. The service is built with Node.js, Express, TypeScript, and Knex for PostgreSQL migrations and query building.
+Backend services for the Nikolai blog, consisting of the main API and a dedicated document generation microservice.
 
 ## Project layout
 
@@ -12,6 +12,13 @@ apps/
       db/            # knex client, migrations, and seeds
       middleware/    # shared Express middleware (request-scoped db helper)
       routes/        # API route handlers (e.g., /api/health)
+  doc-service/
+    src/
+      config/        # service configuration
+      middleware/    # request logging, error handling, file uploads
+      routes/        # health, template parsing, document rendering
+      services/      # template parser, document renderer (CarboneJS)
+      utils/         # file operations, logging
 ```
 
 ## Getting started
@@ -57,3 +64,31 @@ Initial migrations provision the following tables and indexes:
 ### Seeds and fixtures
 
 Development seeds populate reference categories, entities, templates, and document records so local testing can start immediately. Re-run `npm run seed` whenever you need a clean baseline dataset.
+
+## Doc Service
+
+A dedicated microservice for template parsing and document generation using CarboneJS. See [`apps/doc-service/README.md`](apps/doc-service/README.md) for detailed documentation.
+
+### Quick start
+
+```bash
+cd apps/doc-service
+npm install
+cp .env.example .env
+npm run dev
+```
+
+The service will start on port 3001 (configurable via `PORT` environment variable) and exposes:
+
+- `GET /health` – health check
+- `POST /templates/parse` – extract placeholders from DOCX/HTML templates
+- `POST /documents/render` – generate documents from templates with JSON data
+
+### Template syntax
+
+The doc-service supports two placeholder syntaxes:
+
+- `{{placeholder}}` – Standard double-brace syntax (for DOCX with docxtemplater)
+- `{d.placeholder}` – CarboneJS syntax (for HTML and format conversion)
+
+Both syntaxes are detected during parsing. For rendering, use CarboneJS syntax `{d.field}` for best compatibility with format conversion features.
