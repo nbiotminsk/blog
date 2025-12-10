@@ -1,4 +1,6 @@
 import express, { NextFunction, Request, Response } from 'express';
+import swaggerUi from 'swagger-ui-express';
+import { specs } from './config/swagger';
 
 import routes from './routes';
 import { requestContext } from './middleware/request-context';
@@ -9,6 +11,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(requestContext);
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use('/api', routes);
 
 app.use((_req, res) => {
