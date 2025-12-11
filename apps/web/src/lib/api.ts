@@ -89,19 +89,24 @@ class ApiClient {
     await this.client.delete(`/api/entities/${id}`);
   }
 
-  async searchEntities(params: SearchEntitiesParams): Promise<PaginatedResponse<Entity>> {
-    const response = await this.client.get('/api/entities/search', { params });
-    
-    // Transform the response to match the expected format
-    const data = response.data;
-    return {
-      data: data.data || [],
-      total: data.total || 0,
-      page: Math.floor((params.offset || 0) / (params.limit || 20)) + 1,
-      limit: params.limit || 20,
-      totalPages: Math.ceil((data.total || 0) / (params.limit || 20)),
-    };
-  }
+  async listEntities(): Promise<Entity[]> {
+     const response = await this.client.get<Entity[]>('/api/entities');
+     return response.data;
+   }
+
+   async searchEntities(params: SearchEntitiesParams): Promise<PaginatedResponse<Entity>> {
+     const response = await this.client.get('/api/entities/search', { params });
+
+     // Transform the response to match the expected format
+     const data = response.data;
+     return {
+       data: data.data || [],
+       total: data.total || 0,
+       page: Math.floor((params.offset || 0) / (params.limit || 20)) + 1,
+       limit: params.limit || 20,
+       totalPages: Math.ceil((data.total || 0) / (params.limit || 20)),
+     };
+   }
 
   // Category endpoints
   async createCategory(data: CreateCategoryRequest): Promise<Category> {

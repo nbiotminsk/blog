@@ -87,8 +87,8 @@ export const Entities = () => {
       title: 'Name',
       render: (value: string, record: Entity) => (
         <div>
-          <div className="text-sm font-medium text-gray-900">{value}</div>
-          <div className="text-sm text-gray-500">{record.email}</div>
+          <div className="text-sm font-medium text-gray-900 dark:text-white">{value}</div>
+          <div className="text-sm text-gray-500 dark:text-gray-400">{record.email}</div>
         </div>
       ),
     },
@@ -96,7 +96,7 @@ export const Entities = () => {
       key: 'phone',
       title: 'Phone',
       render: (value: string) => (
-        <span className="text-sm text-gray-900">{value || '-'}</span>
+        <span className="text-sm text-gray-900 dark:text-gray-100">{value || '-'}</span>
       ),
     },
     {
@@ -107,11 +107,11 @@ export const Entities = () => {
           {categories?.map((category) => (
             <span
               key={category.id}
-              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800"
+              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200"
             >
               {category.name}
             </span>
-          )) || <span className="text-sm text-gray-500">-</span>}
+          )) || <span className="text-sm text-gray-500 dark:text-gray-400">-</span>}
         </div>
       ),
     },
@@ -122,13 +122,13 @@ export const Entities = () => {
         <div className="flex space-x-2">
           <button
             onClick={() => handleEditEntity(record)}
-            className="text-blue-600 hover:text-blue-900 text-sm font-medium"
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm font-medium transition-colors"
           >
             Edit
           </button>
           <button
             onClick={() => handleDeleteEntity(record)}
-            className="text-red-600 hover:text-red-900 text-sm font-medium"
+            className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-sm font-medium transition-colors"
           >
             Delete
           </button>
@@ -141,10 +141,10 @@ export const Entities = () => {
     <div className="space-y-6">
       <div className="md:flex md:items-center md:justify-between">
         <div className="flex-1 min-w-0">
-          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+          <h2 className="text-2xl font-bold leading-7 text-gray-900 dark:text-white sm:text-3xl sm:truncate">
             Entities
           </h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Manage your entities and their categories
           </p>
         </div>
@@ -158,10 +158,10 @@ export const Entities = () => {
         </div>
       </div>
 
-      <div className="bg-white shadow rounded-lg">
+      <div className="bg-white dark:bg-gray-900 shadow dark:shadow-lg rounded-lg border border-gray-200 dark:border-gray-800">
         <div className="p-6">
           <div className="mb-6">
-            <label htmlFor="search" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="search" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
               Search Entities
             </label>
             <div className="mt-1 relative">
@@ -191,8 +191,8 @@ export const Entities = () => {
           />
 
           {entitiesData && entitiesData.totalPages > 1 && (
-            <div className="mt-6 flex items-center justify-between">
-              <div className="text-sm text-gray-700">
+            <div className="mt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="text-sm text-gray-700 dark:text-gray-300">
                 Showing page {entitiesData.page} of {entitiesData.totalPages} 
                 ({entitiesData.total} total items)
               </div>
