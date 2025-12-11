@@ -25,15 +25,16 @@ A comprehensive document generation and management system built with Node.js, Re
 - **Frontend (React + TypeScript)**: Modern web interface with React Query for state management
 - **API Service (Express + TypeScript)**: RESTful API with PostgreSQL integration and Knex.js migrations
 - **Document Service (Express + TypeScript)**: Dedicated microservice for template parsing and document generation using CarboneJS
-- **PostgreSQL**: Primary database for entities, categories, templates, and document records
+- **PostgreSQL**: Primary database for entities, categories, templates, document records, and merge logs
 - **Docker Orchestration**: Multi-container setup with health checks and shared volumes
 
 ### Key Features
 
 - **Template Management**: Upload and parse DOCX/HTML templates with automatic placeholder detection
-- **Entity Management**: Full CRUD operations for entities with full-text search capabilities
+- **Entity Management**: Full CRUD operations for entities with full-text search capabilities and deduplication support
 - **Document Generation**: Dynamic document creation from templates with JSON data inputs
 - **Category System**: Flexible categorization with many-to-many relationships
+- **Entity Deduplication**: Phone number normalization and merge history tracking for duplicate entity resolution
 - **File Storage**: Shared volumes for template storage and generated document storage
 - **Health Monitoring**: Service health checks and status endpoints
 
@@ -151,6 +152,12 @@ npm run migrate:status   # Check migration status
 npm run seed            # Load seed data
 ```
 
+**Available Migrations:**
+- `20231210120000_initial_schema` - Initial database schema with entities, categories, templates, and document records
+- `20231211120000_dedup_schema_prep` - Adds entity deduplication preparation tables and columns:
+  - `normalized_phone` generated column on `entities` for phone number deduplication
+  - `entity_merge_logs` table for tracking entity merge operations
+
 **Database Connection:**
 ```bash
 # Connect to PostgreSQL
@@ -231,6 +238,54 @@ The document generation service uses CarboneJS for template processing:
 - Large templates (>10MB) may require increased timeout
 - Complex templates with many placeholders may need additional memory
 - Generated documents are cached for improved performance
+
+## Database Schema
+
+### Key Tables
+
+**entities**
+- `id` (UUID, Primary Key)
+- `name` (String)
+- `email` (String, Unique)
+- `phone` (String)
+- `external_reference` (String)
+- `metadata` (JSONB)
+- `search_vector` (Generated Full-Text Search Vector)
+- `normalized_phone` (Generated Column) - Phone number with all non-digits stripped, used for deduplication
+- Indexes: `search_vector`, `name_trgm`, `email_trgm`, `phone_trgm`, `normalized_phone`
+
+**entity_merge_logs** (Deduplication tracking)
+- `id` (UUID, Primary Key)
+- `primary_entity_id` (UUID, FK to entities) - The entity that was kept
+- `merged_entity_id` (UUID, FK to entities) - The entity that was merged
+- `primary_entity_snapshot` (JSONB) - Full snapshot of primary entity before merge
+- `merged_entity_snapshot` (JSONB) - Full snapshot of merged entity before merge
+- `merged_payload` (JSONB) - The resulting merged entity data
+- `updated_document_ids` (UUID Array) - Document IDs reassigned during merge
+- `notes` (Text) - Optional merge notes
+- `performed_by` (String) - User who performed the merge
+- `created_at`, `updated_at` (Timestamps)
+- Indexes: `primary_entity_id`, `merged_entity_id`, `created_at`
+
+**categories**, **entity_categories**
+- Standard categorization tables with many-to-many relationship
+- Supports flexible entity categorization
+
+**templates**
+- Stores document templates (DOCX/HTML)
+- Tracks placeholders and metadata
+- Supports multiple formats
+
+**document_records**
+- Tracks generated documents
+- Links entities to templates
+- Stores generation status and results
+
+### PostgreSQL Extensions
+
+- `uuid-ossp` - UUID generation
+- `pg_trgm` - Full-text search and trigram matching
+- `fuzzystrmatch` - Fuzzy string matching for deduplication
 
 ## API Documentation
 
