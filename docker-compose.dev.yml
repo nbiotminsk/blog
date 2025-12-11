@@ -1,0 +1,43 @@
+version: '3.8'
+
+# Development override configuration
+# Use with: docker compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+services:
+  api:
+    build:
+      target: development
+    environment:
+      NODE_ENV: development
+      LOG_LEVEL: debug
+    volumes:
+      - ./apps/api:/app
+      - /app/node_modules
+    command: npm run dev
+
+  doc-service:
+    build:
+      target: development
+    environment:
+      NODE_ENV: development
+      LOG_LEVEL: debug
+    volumes:
+      - ./apps/doc-service:/app
+      - /app/node_modules
+    command: npm run dev
+
+  web:
+    build:
+      target: development
+    environment:
+      NODE_ENV: development
+      VITE_API_URL: http://localhost:3002
+    volumes:
+      - ./apps/web:/app
+      - /app/node_modules
+      - /app/dist
+    command: npm run dev
+
+  postgres:
+    environment:
+      POSTGRES_PASSWORD: development_password

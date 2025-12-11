@@ -1,4 +1,4 @@
-# Multi-stage build for document service
+# Multi-stage build for API service
 FROM node:18-alpine AS base
 WORKDIR /app
 
@@ -30,14 +30,16 @@ RUN npm ci --only=production && npm cache clean --force
 
 # Copy built application
 COPY --from=development --chown=nikolai:nodejs /app/dist ./dist
+COPY --from=development --chown=nikolai:nodejs /app/knexfile.ts ./
+COPY --from=development --chown=nikolai:nodejs /app/src/db ./src/db
 
 # Switch to non-root user
 USER nikolai
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:${PORT:-3001}/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
+  CMD node -e "require('http').get('http://localhost:${PORT:-3002}/api/health', (res) => { process.exit(res.statusCode === 200 ? 0 : 1) })"
 
-EXPOSE 3001
+EXPOSE 3002
 
 CMD ["npm", "run", "start"]
