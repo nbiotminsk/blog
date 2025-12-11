@@ -48,97 +48,104 @@ export const EntityForm = ({ entity, categories, onSubmit, isLoading, error }: E
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
       {error && <ErrorMessage message={error} />}
       
-      <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-          Name *
-        </label>
-        <input
-          {...register('name')}
-          type="text"
-          id="name"
-          className="input mt-1"
-          placeholder="Enter entity name"
-        />
-        {errors.name && (
-          <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-        )}
-      </div>
-
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-          Email *
-        </label>
-        <input
-          {...register('email')}
-          type="email"
-          id="email"
-          className="input mt-1"
-          placeholder="Enter email address"
-        />
-        {errors.email && (
-          <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-        )}
-      </div>
-
-      <div>
-        <label htmlFor="phone" className="block text-sm font-medium text-gray-700">
-          Phone
-        </label>
-        <input
-          {...register('phone')}
-          type="tel"
-          id="phone"
-          className="input mt-1"
-          placeholder="Enter phone number"
-        />
-        {errors.phone && (
-          <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
-        )}
-      </div>
-
-      {categories.length > 0 && (
+      <div className="grid grid-cols-1 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Categories
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Name *
           </label>
-          <div className="space-y-2 max-h-40 overflow-y-auto">
-            {categories.map((category) => (
-              <div key={category.id} className="flex items-center">
-                <input
-                  id={`category-${category.id}`}
-                  name="categories"
-                  type="checkbox"
-                  value={category.id}
-                  defaultChecked={assignedCategoryIds.includes(category.id)}
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-                />
-                <label
-                  htmlFor={`category-${category.id}`}
-                  className="ml-2 block text-sm text-gray-900"
-                >
-                  {category.name}
-                  {category.description && (
-                    <span className="text-gray-500"> - {category.description}</span>
-                  )}
-                </label>
-              </div>
-            ))}
-          </div>
+          <input
+            {...register('name')}
+            type="text"
+            id="name"
+            autoComplete="name"
+            className="input mt-1 w-full"
+            placeholder="Enter entity name"
+          />
+          {errors.name && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.name.message}</p>
+          )}
         </div>
-      )}
 
-      <div className="flex justify-end space-x-3">
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Email *
+          </label>
+          <input
+            {...register('email')}
+            type="email"
+            id="email"
+            autoComplete="email"
+            inputMode="email"
+            className="input mt-1 w-full"
+            placeholder="Enter email address"
+          />
+          {errors.email && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.email.message}</p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="phone" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Phone
+          </label>
+          <input
+            {...register('phone')}
+            type="tel"
+            id="phone"
+            autoComplete="tel"
+            inputMode="tel"
+            className="input mt-1 w-full"
+            placeholder="Enter phone number"
+          />
+          {errors.phone && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.phone.message}</p>
+          )}
+        </div>
+
+        {categories.length > 0 && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Categories
+            </label>
+            <div className="space-y-2 max-h-40 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg p-3">
+              {categories.map((category) => (
+                <div key={category.id} className="flex items-center min-h-touch">
+                  <input
+                    id={`category-${category.id}`}
+                    name="categories"
+                    type="checkbox"
+                    value={category.id}
+                    defaultChecked={assignedCategoryIds.includes(category.id)}
+                    className="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 dark:border-gray-600 rounded"
+                  />
+                  <label
+                    htmlFor={`category-${category.id}`}
+                    className="ml-3 block text-sm text-gray-900 dark:text-gray-100"
+                  >
+                    {category.name}
+                    {category.description && (
+                      <span className="text-gray-500 dark:text-gray-400"> - {category.description}</span>
+                    )}
+                  </label>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
         <button
           type="button"
           onClick={() => reset()}
-          className="btn btn-secondary"
+          className="btn btn-secondary w-full sm:w-auto"
           disabled={isLoading}
         >
           Reset
         </button>
         <button
           type="submit"
-          className="btn btn-primary"
+          className="btn btn-primary w-full sm:w-auto"
           disabled={isLoading}
         >
           {isLoading && <LoadingSpinner size="sm" className="mr-2" />}

@@ -98,3 +98,25 @@ export interface PaginatedResponse<T> {
   limit: number;
   totalPages: number;
 }
+
+export interface DuplicatePair {
+  entity1: Entity;
+  entity2: Entity;
+  similarity_score: number;
+  name_match: boolean;
+  email_match: boolean;
+  phone_match: boolean;
+}
+
+export interface MergeEntitiesRequest {
+  primaryEntityId: string;
+  duplicateEntityId: string;
+  mergedFields: {
+    name: string;
+    email: string;
+    phone?: string;
+    metadata?: Record<string, any>;
+  };
+  categoryIds?: string[];
+  note?: string;
+}

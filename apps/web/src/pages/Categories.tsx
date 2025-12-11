@@ -100,27 +100,27 @@ export const Categories = () => {
 
   return (
     <div className="space-y-6">
-      <div className="md:flex md:items-center md:justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+          <h2 className="text-2xl font-bold leading-7 text-gray-900 dark:text-gray-100 sm:text-3xl sm:truncate">
             Categories
           </h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Manage categories to organize your entities
           </p>
         </div>
-        <div className="mt-4 flex md:mt-0 md:ml-4">
+        <div className="flex sm:mt-0">
           <button
             onClick={() => setIsCreateModalOpen(true)}
-            className="btn btn-primary"
+            className="btn btn-primary w-full sm:w-auto"
           >
             Create Category
           </button>
         </div>
       </div>
 
-      <div className="bg-white shadow rounded-lg">
-        <div className="p-6">
+      <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
+        <div className="p-4 sm:p-6">
           {error && <ErrorMessage message="Failed to load categories" />}
           
           <Table

@@ -12,6 +12,7 @@ import {
   CreateTemplateRequest,
   GenerateDocumentRequest,
   SearchEntitiesParams,
+  MergeEntitiesRequest,
 } from '@/types';
 
 // Entity hooks
@@ -175,5 +176,39 @@ export const useHealthCheck = () => {
   return useQuery({
     queryKey: ['health'],
     queryFn: () => apiClient.healthCheck(),
+  });
+};
+
+// Duplicate detection hooks
+export const useFindDuplicates = (params?: { threshold?: number; limit?: number; page?: number }) => {
+  return useQuery({
+    queryKey: ['duplicates', params],
+    queryFn: () => apiClient.findDuplicates(params),
+  });
+};
+
+export const useFindDuplicatesForEntity = (entityId: string, threshold?: number) => {
+  return useQuery({
+    queryKey: ['duplicates', 'entity', entityId, threshold],
+    queryFn: () => apiClient.findDuplicatesForEntity(entityId, threshold),
+    enabled: !!entityId,
+  });
+};
+
+export const useMergeEntities = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: MergeEntitiesRequest) => apiClient.mergeEntities(data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['entities'] });
+      queryClient.invalidateQueries({ queryKey: ['duplicates'] });
+    },
+  });
+};
+
+export const useEntities = () => {
+  return useQuery({
+    queryKey: ['entities'],
+    queryFn: () => apiClient.searchEntities({}),
   });
 };
