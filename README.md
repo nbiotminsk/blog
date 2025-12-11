@@ -248,6 +248,18 @@ The document generation service uses CarboneJS for template processing:
 - `DELETE /api/entities/:id` - Delete entity
 - `GET /api/entities/search` - Search entities with filters
 
+**Entity Deduplication:**
+- `GET /api/entities/duplicates` - List duplicate entity pairs (paginated)
+  - Query params: `threshold` (0-1, default 0.5), `limit` (default 20), `page` (default 1)
+  - Response includes: `id1`, `name1`, `email1`, `phone1`, `id2`, `name2`, `email2`, `phone2`, `nameSimilarity`, `emailMatch`, `phoneMatch`, `compositeScore`
+- `GET /api/entities/duplicates/check?id={entityId}` - Find duplicates for a specific entity
+  - Query params: `id` (required, UUID), `threshold` (0-1, default 0.5)
+  - Returns array of duplicate pairs
+- `POST /api/entities/merge` - Merge two entities
+  - Body: `{ primaryEntityId, duplicateEntityId, mergedFields, categoryIds?, note? }`
+  - Updates primary entity, reassigns documents, transfers categories, logs merge, deletes duplicate
+  - Returns merged entity snapshot
+
 **Category Management:**
 - `GET /api/categories` - List all categories
 - `POST /api/categories` - Create new category
@@ -359,6 +371,64 @@ kill -9 $(lsof -t -i:3000)
 - Increase Docker memory limit for doc-service
 - Adjust `CARBONE_TIMEOUT` for complex templates
 - Consider splitting large templates into smaller parts
+
+## Entity Deduplication Guide
+
+The system provides comprehensive entity deduplication capabilities to identify and merge duplicate entity records.
+
+### How It Works
+
+**Similarity Scoring:**
+The system uses a weighted scoring algorithm to identify potential duplicates:
+- **Name Similarity** (40%): Levenshtein distance-based fuzzy matching
+- **Email Match** (35%): Case-insensitive exact matching
+- **Phone Match** (25%): Normalized phone number exact matching
+
+Scoring ranges from 0 (completely different) to 1 (identical).
+
+### Usage Examples
+
+**Find All Duplicates**
+```bash
+# List all duplicate pairs with default threshold (0.5)
+curl http://localhost:3002/api/entities/duplicates
+
+# With custom threshold (find very similar entities)
+curl "http://localhost:3002/api/entities/duplicates?threshold=0.8&limit=50&page=1"
+```
+
+**Check Duplicates for Specific Entity**
+```bash
+curl "http://localhost:3002/api/entities/duplicates/check?id=550e8400-e29b-41d4-a716-446655440000&threshold=0.6"
+```
+
+**Merge Entities**
+```bash
+curl -X POST http://localhost:3002/api/entities/merge \
+  -H "Content-Type: application/json" \
+  -d '{
+    "primaryEntityId": "550e8400-e29b-41d4-a716-446655440000",
+    "duplicateEntityId": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+    "mergedFields": {
+      "name": "John Doe",
+      "email": "john@example.com",
+      "phone": "+1-555-0123"
+    },
+    "categoryIds": ["category-id-1", "category-id-2"],
+    "note": "Merged duplicate record from import"
+  }'
+```
+
+### Merge Behavior
+
+When two entities are merged:
+1. **Primary Entity** is updated with merged fields
+2. **Document Records** - All documents linked to the duplicate are reassigned to the primary entity
+3. **Categories** - Categories from the duplicate are transferred to the primary entity
+4. **Merge Logging** - A record is created in `entity_merge_logs` table for audit trail
+5. **Deletion** - The duplicate entity is deleted (done in transaction for safety)
+
+All operations are wrapped in a database transaction to ensure data consistency.
 
 ### Development Tips
 

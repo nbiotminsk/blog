@@ -1,6 +1,7 @@
 import { Knex } from 'knex';
 import { knexInstance } from '../db';
 import { Entity } from '../types/db';
+import { calculateDuplicateScore, DuplicatePair } from '../utils/similarity';
 
 export class EntityRepository {
   private db: Knex;
@@ -65,5 +66,83 @@ export class EntityRepository {
     const total = parseInt(countResult[0]?.count || '0', 10);
 
     return { data, total };
+  }
+
+  async findAllDuplicatePairs(threshold: number = 0.5): Promise<DuplicatePair[]> {
+    const entities = await this.db('entities').orderBy('created_at', 'desc');
+    const duplicates: DuplicatePair[] = [];
+
+    for (let i = 0; i < entities.length; i++) {
+      for (let j = i + 1; j < entities.length; j++) {
+        const e1 = entities[i];
+        const e2 = entities[j];
+
+        const score = calculateDuplicateScore(e1.name, e1.email, e1.phone, e2.name, e2.email, e2.phone);
+
+        if (score >= threshold) {
+          const emailMatch = e1.email.toLowerCase() === e2.email.toLowerCase();
+          const normalizedPhone1 = (e1.phone || '').replace(/[^\d+]/g, '');
+          const normalizedPhone2 = (e2.phone || '').replace(/[^\d+]/g, '');
+          const phoneMatch = normalizedPhone1 !== '' && normalizedPhone1 === normalizedPhone2;
+
+          const nameSimilarity = calculateDuplicateScore(e1.name, e1.email, e1.phone, e2.name, e2.email, e2.phone) * 0.4 / 0.4;
+
+          duplicates.push({
+            id1: e1.id,
+            name1: e1.name,
+            email1: e1.email,
+            phone1: e1.phone,
+            id2: e2.id,
+            name2: e2.name,
+            email2: e2.email,
+            phone2: e2.phone,
+            nameSimilarity,
+            emailMatch,
+            phoneMatch,
+            compositeScore: score,
+          });
+        }
+      }
+    }
+
+    return duplicates.sort((a, b) => b.compositeScore - a.compositeScore);
+  }
+
+  async findDuplicatesForEntity(entityId: string, threshold: number = 0.5): Promise<DuplicatePair[]> {
+    const entity = await this.findById(entityId);
+    if (!entity) return [];
+
+    const allEntities = await this.db('entities').where('id', '!=', entityId).orderBy('created_at', 'desc');
+    const duplicates: DuplicatePair[] = [];
+
+    for (const other of allEntities) {
+      const score = calculateDuplicateScore(entity.name, entity.email, entity.phone, other.name, other.email, other.phone);
+
+      if (score >= threshold) {
+        const emailMatch = entity.email.toLowerCase() === other.email.toLowerCase();
+        const normalizedPhone1 = (entity.phone || '').replace(/[^\d+]/g, '');
+        const normalizedPhone2 = (other.phone || '').replace(/[^\d+]/g, '');
+        const phoneMatch = normalizedPhone1 !== '' && normalizedPhone1 === normalizedPhone2;
+
+        const nameSimilarity = calculateDuplicateScore(entity.name, entity.email, entity.phone, other.name, other.email, other.phone) * 0.4 / 0.4;
+
+        duplicates.push({
+          id1: entity.id,
+          name1: entity.name,
+          email1: entity.email,
+          phone1: entity.phone,
+          id2: other.id,
+          name2: other.name,
+          email2: other.email,
+          phone2: other.phone,
+          nameSimilarity,
+          emailMatch,
+          phoneMatch,
+          compositeScore: score,
+        });
+      }
+    }
+
+    return duplicates.sort((a, b) => b.compositeScore - a.compositeScore);
   }
 }
