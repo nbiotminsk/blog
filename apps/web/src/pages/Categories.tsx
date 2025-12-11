@@ -60,9 +60,9 @@ export const Categories = () => {
       title: 'Name',
       render: (value: string, record: Category) => (
         <div>
-          <div className="text-sm font-medium text-gray-900">{value}</div>
+          <div className="text-sm font-medium text-gray-900 dark:text-white">{value}</div>
           {record.description && (
-            <div className="text-sm text-gray-500">{record.description}</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">{record.description}</div>
           )}
         </div>
       ),
@@ -71,7 +71,7 @@ export const Categories = () => {
       key: 'created_at',
       title: 'Created',
       render: (value: string) => (
-        <span className="text-sm text-gray-500">
+        <span className="text-sm text-gray-500 dark:text-gray-400">
           {new Date(value).toLocaleDateString()}
         </span>
       ),
@@ -83,13 +83,13 @@ export const Categories = () => {
         <div className="flex space-x-2">
           <button
             onClick={() => handleEditCategory(record)}
-            className="text-blue-600 hover:text-blue-900 text-sm font-medium"
+            className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm font-medium transition-colors"
           >
             Edit
           </button>
           <button
             onClick={() => handleDeleteCategory(record)}
-            className="text-red-600 hover:text-red-900 text-sm font-medium"
+            className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-sm font-medium transition-colors"
           >
             Delete
           </button>
@@ -99,38 +99,38 @@ export const Categories = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="md:flex md:items-center md:justify-between">
-        <div className="flex-1 min-w-0">
-          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
-            Categories
-          </h2>
-          <p className="mt-1 text-sm text-gray-500">
-            Manage categories to organize your entities
-          </p>
-        </div>
-        <div className="mt-4 flex md:mt-0 md:ml-4">
-          <button
-            onClick={() => setIsCreateModalOpen(true)}
-            className="btn btn-primary"
-          >
-            Create Category
-          </button>
-        </div>
-      </div>
+   <div className="space-y-6">
+     <div className="md:flex md:items-center md:justify-between">
+       <div className="flex-1 min-w-0">
+         <h2 className="text-2xl font-bold leading-7 text-gray-900 dark:text-white sm:text-3xl sm:truncate">
+           Categories
+         </h2>
+         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+           Manage categories to organize your entities
+         </p>
+       </div>
+       <div className="mt-4 flex md:mt-0 md:ml-4">
+         <button
+           onClick={() => setIsCreateModalOpen(true)}
+           className="btn btn-primary"
+         >
+           Create Category
+         </button>
+       </div>
+     </div>
 
-      <div className="bg-white shadow rounded-lg">
-        <div className="p-6">
-          {error && <ErrorMessage message="Failed to load categories" />}
-          
-          <Table
-            data={categories}
-            columns={categoryColumns}
-            isLoading={isLoading}
-            emptyMessage="No categories found"
-          />
-        </div>
-      </div>
+     <div className="bg-white dark:bg-gray-900 shadow dark:shadow-lg rounded-lg border border-gray-200 dark:border-gray-800">
+       <div className="p-6">
+         {error && <ErrorMessage message="Failed to load categories" />}
+
+         <Table
+           data={categories}
+           columns={categoryColumns}
+           isLoading={isLoading}
+           emptyMessage="No categories found"
+         />
+       </div>
+     </div>
 
       <Modal
         isOpen={isCreateModalOpen}

@@ -55,9 +55,16 @@ export const useEntity = (id: string) => {
 };
 
 export const useSearchEntities = (params: SearchEntitiesParams) => {
+   return useQuery({
+     queryKey: ['entities', 'search', params],
+     queryFn: () => apiClient.searchEntities(params),
+   });
+ };
+
+export const useEntities = () => {
   return useQuery({
-    queryKey: ['entities', 'search', params],
-    queryFn: () => apiClient.searchEntities(params),
+    queryKey: ['entities'],
+    queryFn: () => apiClient.listEntities(),
   });
 };
 

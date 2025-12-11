@@ -50,86 +50,86 @@ export const Templates = () => {
   };
 
   const templateColumns = [
-    {
-      key: 'name',
-      title: 'Name',
-      render: (value: string, record: Template) => (
-        <div>
-          <div className="text-sm font-medium text-gray-900">{value}</div>
-          <div className="text-sm text-gray-500 capitalize">{record.format} template</div>
-        </div>
-      ),
-    },
-    {
-      key: 'placeholders',
-      title: 'Placeholders',
-      render: (placeholders: string[]) => (
-        <div className="flex flex-wrap gap-1">
-          {placeholders?.slice(0, 3).map((placeholder, index) => (
-            <span
-              key={index}
-              className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800"
-            >
-              {placeholder}
-            </span>
-          ))}
-          {placeholders?.length > 3 && (
-            <span className="text-xs text-gray-500">
-              +{placeholders.length - 3} more
-            </span>
-          )}
-          {!placeholders?.length && (
-            <span className="text-sm text-gray-500">-</span>
-          )}
-        </div>
-      ),
-    },
-    {
-      key: 'file_size',
-      title: 'Size',
-      render: (value: number) => (
-        <span className="text-sm text-gray-900">{formatFileSize(value)}</span>
-      ),
-    },
-    {
-      key: 'created_at',
-      title: 'Created',
-      render: (value: string) => (
-        <span className="text-sm text-gray-500">
-          {new Date(value).toLocaleDateString()}
-        </span>
-      ),
-    },
-    {
-      key: 'actions',
-      title: 'Actions',
-      render: (value: any, record: Template) => (
-        <div className="flex space-x-2">
-          <button
-            onClick={() => handlePreviewTemplate(record)}
-            className="text-blue-600 hover:text-blue-900 text-sm font-medium"
-          >
-            Preview
-          </button>
-          <button
-            onClick={() => handleDeleteTemplate(record)}
-            className="text-red-600 hover:text-red-900 text-sm font-medium"
-          >
-            Delete
-          </button>
-        </div>
-      ),
-    },
-  ];
+     {
+       key: 'name',
+       title: 'Name',
+       render: (value: string, record: Template) => (
+         <div>
+           <div className="text-sm font-medium text-gray-900 dark:text-white">{value}</div>
+           <div className="text-sm text-gray-500 dark:text-gray-400 capitalize">{record.format} template</div>
+         </div>
+       ),
+     },
+     {
+       key: 'placeholders',
+       title: 'Placeholders',
+       render: (placeholders: string[]) => (
+         <div className="flex flex-wrap gap-1">
+           {placeholders?.slice(0, 3).map((placeholder, index) => (
+             <span
+               key={index}
+               className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200"
+             >
+               {placeholder}
+             </span>
+           ))}
+           {placeholders?.length > 3 && (
+             <span className="text-xs text-gray-500 dark:text-gray-400">
+               +{placeholders.length - 3} more
+             </span>
+           )}
+           {!placeholders?.length && (
+             <span className="text-sm text-gray-500 dark:text-gray-400">-</span>
+           )}
+         </div>
+       ),
+     },
+     {
+       key: 'file_size',
+       title: 'Size',
+       render: (value: number) => (
+         <span className="text-sm text-gray-900 dark:text-gray-100">{formatFileSize(value)}</span>
+       ),
+     },
+     {
+       key: 'created_at',
+       title: 'Created',
+       render: (value: string) => (
+         <span className="text-sm text-gray-500 dark:text-gray-400">
+           {new Date(value).toLocaleDateString()}
+         </span>
+       ),
+     },
+     {
+       key: 'actions',
+       title: 'Actions',
+       render: (value: any, record: Template) => (
+         <div className="flex space-x-2">
+           <button
+             onClick={() => handlePreviewTemplate(record)}
+             className="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 text-sm font-medium transition-colors"
+           >
+             Preview
+           </button>
+           <button
+             onClick={() => handleDeleteTemplate(record)}
+             className="text-red-600 dark:text-red-400 hover:text-red-900 dark:hover:text-red-300 text-sm font-medium transition-colors"
+           >
+             Delete
+           </button>
+         </div>
+       ),
+     },
+   ];
 
   return (
     <div className="space-y-6">
       <div className="md:flex md:items-center md:justify-between">
         <div className="flex-1 min-w-0">
-          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+          <h2 className="text-2xl font-bold leading-7 text-gray-900 dark:text-white sm:text-3xl sm:truncate">
             Templates
           </h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Upload and manage document templates (DOCX/HTML)
           </p>
         </div>
@@ -143,10 +143,10 @@ export const Templates = () => {
         </div>
       </div>
 
-      <div className="bg-white shadow rounded-lg">
+      <div className="bg-white dark:bg-gray-900 shadow dark:shadow-lg rounded-lg border border-gray-200 dark:border-gray-800">
         <div className="p-6">
           {error && <ErrorMessage message="Failed to load templates" />}
-          
+
           <Table
             data={templates}
             columns={templateColumns}
@@ -183,25 +183,25 @@ export const Templates = () => {
         {selectedTemplate && (
           <div className="space-y-4">
             <div>
-              <h3 className="text-lg font-medium text-gray-900">{selectedTemplate.name}</h3>
-              <p className="text-sm text-gray-500 capitalize">
+              <h3 className="text-lg font-medium text-gray-900 dark:text-white">{selectedTemplate.name}</h3>
+              <p className="text-sm text-gray-500 dark:text-gray-400 capitalize">
                 {selectedTemplate.format} template • {formatFileSize(selectedTemplate.file_size)}
               </p>
             </div>
-            
+
             <div>
-              <h4 className="text-sm font-medium text-gray-900 mb-2">Detected Placeholders:</h4>
+              <h4 className="text-sm font-medium text-gray-900 dark:text-white mb-2">Detected Placeholders:</h4>
               <div className="flex flex-wrap gap-2">
                 {selectedTemplate.placeholders.map((placeholder, index) => (
                   <span
                     key={index}
-                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800"
+                    className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200"
                   >
                     {placeholder}
                   </span>
                 ))}
                 {!selectedTemplate.placeholders.length && (
-                  <span className="text-sm text-gray-500">No placeholders detected</span>
+                  <span className="text-sm text-gray-500 dark:text-gray-400">No placeholders detected</span>
                 )}
               </div>
             </div>

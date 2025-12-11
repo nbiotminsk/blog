@@ -34,7 +34,7 @@ export function Table<T extends Record<string, any>>({
 
   if (data.length === 0) {
     return (
-      <div className="text-center py-8 text-gray-500">
+      <div className="text-center py-8 text-gray-500 dark:text-gray-400">
         {emptyMessage}
       </div>
     );
@@ -47,9 +47,9 @@ export function Table<T extends Record<string, any>>({
   };
 
   return (
-    <div className="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+    <div className="overflow-x-auto overflow-hidden shadow dark:shadow-lg ring-1 ring-black dark:ring-gray-700 ring-opacity-5 md:rounded-lg">
       <table className="table">
-        <thead className="bg-gray-50">
+        <thead className="bg-gray-50 dark:bg-gray-800">
           <tr>
             {columns.map((column, index) => (
               <th key={index} className={column.className || ''}>
@@ -58,11 +58,11 @@ export function Table<T extends Record<string, any>>({
             ))}
           </tr>
         </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
+        <tbody className="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
           {data.map((record, rowIndex) => (
             <tr 
               key={rowIndex} 
-              className={`${onRowClick ? 'cursor-pointer hover:bg-gray-50' : ''}`}
+              className={`${onRowClick ? 'cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors' : ''}`}
               onClick={() => handleRowClick(record)}
             >
               {columns.map((column, colIndex) => (
