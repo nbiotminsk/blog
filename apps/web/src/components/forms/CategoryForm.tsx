@@ -41,50 +41,52 @@ export const CategoryForm = ({ category, onSubmit, isLoading, error }: CategoryF
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-6">
       {error && <ErrorMessage message={error} />}
       
-      <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-          Name *
-        </label>
-        <input
-          {...register('name')}
-          type="text"
-          id="name"
-          className="input mt-1"
-          placeholder="Enter category name"
-        />
-        {errors.name && (
-          <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
-        )}
+      <div className="grid grid-cols-1 gap-6">
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Name *
+          </label>
+          <input
+            {...register('name')}
+            type="text"
+            id="name"
+            className="input mt-1 w-full"
+            placeholder="Enter category name"
+          />
+          {errors.name && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.name.message}</p>
+          )}
+        </div>
+
+        <div>
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Description
+          </label>
+          <textarea
+            {...register('description')}
+            id="description"
+            rows={3}
+            className="input mt-1 w-full resize-none"
+            placeholder="Enter category description"
+          />
+          {errors.description && (
+            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{errors.description.message}</p>
+          )}
+        </div>
       </div>
 
-      <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-          Description
-        </label>
-        <textarea
-          {...register('description')}
-          id="description"
-          rows={3}
-          className="input mt-1"
-          placeholder="Enter category description"
-        />
-        {errors.description && (
-          <p className="mt-1 text-sm text-red-600">{errors.description.message}</p>
-        )}
-      </div>
-
-      <div className="flex justify-end space-x-3">
+      <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
         <button
           type="button"
           onClick={() => reset()}
-          className="btn btn-secondary"
+          className="btn btn-secondary w-full sm:w-auto"
           disabled={isLoading}
         >
           Reset
         </button>
         <button
           type="submit"
-          className="btn btn-primary"
+          className="btn btn-primary w-full sm:w-auto"
           disabled={isLoading}
         >
           {isLoading && <LoadingSpinner size="sm" className="mr-2" />}

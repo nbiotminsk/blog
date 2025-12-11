@@ -13,6 +13,8 @@ import {
   SearchEntitiesParams,
   PaginatedResponse,
   ApiError,
+  DuplicatePair,
+  MergeEntitiesRequest,
 } from '@/types';
 
 class ApiClient {
@@ -176,6 +178,24 @@ class ApiClient {
   // Health check
   async healthCheck(): Promise<{ status: string }> {
     const response = await this.client.get<{ status: string }>('/api/health');
+    return response.data;
+  }
+
+  // Duplicate detection endpoints
+  async findDuplicates(params?: { threshold?: number; limit?: number; page?: number }): Promise<DuplicatePair[]> {
+    const response = await this.client.get<DuplicatePair[]>('/api/entities/duplicates', { params });
+    return response.data;
+  }
+
+  async findDuplicatesForEntity(entityId: string, threshold?: number): Promise<DuplicatePair[]> {
+    const response = await this.client.get<DuplicatePair[]>('/api/entities/duplicates/check', { 
+      params: { id: entityId, threshold } 
+    });
+    return response.data;
+  }
+
+  async mergeEntities(data: MergeEntitiesRequest): Promise<Entity> {
+    const response = await this.client.post<Entity>('/api/entities/merge', data);
     return response.data;
   }
 }

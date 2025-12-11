@@ -21,7 +21,6 @@ export const TemplateUploadForm = ({ onSubmit, isLoading, error }: TemplateUploa
       setFile(selectedFile);
       setLocalError('');
       
-      // Auto-detect format from file extension
       const extension = selectedFile.name.toLowerCase().split('.').pop();
       if (extension === 'docx') {
         setFormat('docx');
@@ -29,7 +28,6 @@ export const TemplateUploadForm = ({ onSubmit, isLoading, error }: TemplateUploa
         setFormat('html');
       }
       
-      // Auto-fill name if not set
       if (!name) {
         const nameWithoutExtension = selectedFile.name.replace(/\.[^/.]+$/, '');
         setName(nameWithoutExtension);
@@ -64,64 +62,66 @@ export const TemplateUploadForm = ({ onSubmit, isLoading, error }: TemplateUploa
     <form onSubmit={handleSubmit} className="space-y-6">
       {(error || localError) && <ErrorMessage message={error || localError} />}
       
-      <div>
-        <label htmlFor="template-name" className="block text-sm font-medium text-gray-700">
-          Template Name *
-        </label>
-        <input
-          type="text"
-          id="template-name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="input mt-1"
-          placeholder="Enter template name"
-          required
-        />
-      </div>
-
-      <div>
-        <label htmlFor="template-format" className="block text-sm font-medium text-gray-700">
-          Format *
-        </label>
-        <select
-          id="template-format"
-          value={format}
-          onChange={(e) => setFormat(e.target.value as 'docx' | 'html')}
-          className="input mt-1"
-          required
-        >
-          <option value="docx">DOCX</option>
-          <option value="html">HTML</option>
-        </select>
-      </div>
-
-      <div>
-        <label htmlFor="template-file" className="block text-sm font-medium text-gray-700">
-          File *
-        </label>
-        <input
-          ref={fileInputRef}
-          type="file"
-          id="template-file"
-          accept=".docx,.html,.htm"
-          onChange={handleFileSelect}
-          className="input mt-1"
-          required
-        />
-        <p className="mt-1 text-sm text-gray-500">
-          Supported formats: DOCX, HTML (Max 10MB)
-        </p>
-      </div>
-
-      {file && (
-        <div className="bg-gray-50 p-3 rounded-md">
-          <p className="text-sm font-medium text-gray-900">Selected file:</p>
-          <p className="text-sm text-gray-700">{file.name}</p>
-          <p className="text-sm text-gray-500">{formatFileSize(file.size)}</p>
+      <div className="grid grid-cols-1 gap-6">
+        <div>
+          <label htmlFor="template-name" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Template Name *
+          </label>
+          <input
+            type="text"
+            id="template-name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="input mt-1 w-full"
+            placeholder="Enter template name"
+            required
+          />
         </div>
-      )}
 
-      <div className="flex justify-end space-x-3">
+        <div>
+          <label htmlFor="template-format" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            Format *
+          </label>
+          <select
+            id="template-format"
+            value={format}
+            onChange={(e) => setFormat(e.target.value as 'docx' | 'html')}
+            className="input mt-1 w-full"
+            required
+          >
+            <option value="docx">DOCX</option>
+            <option value="html">HTML</option>
+          </select>
+        </div>
+
+        <div>
+          <label htmlFor="template-file" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+            File *
+          </label>
+          <input
+            ref={fileInputRef}
+            type="file"
+            id="template-file"
+            accept=".docx,.html,.htm"
+            onChange={handleFileSelect}
+            className="input mt-1 w-full"
+            required
+          />
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Supported formats: DOCX, HTML (Max 10MB)
+          </p>
+        </div>
+
+        {file && (
+          <div className="bg-gray-50 dark:bg-gray-900 p-3 rounded-md border border-gray-200 dark:border-gray-700">
+            <p className="text-sm font-medium text-gray-900 dark:text-gray-100">Selected file:</p>
+            <p className="text-sm text-gray-700 dark:text-gray-300">{file.name}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{formatFileSize(file.size)}</p>
+          </div>
+        )}
+      </div>
+
+      <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
         <button
           type="button"
           onClick={() => {
@@ -133,14 +133,14 @@ export const TemplateUploadForm = ({ onSubmit, isLoading, error }: TemplateUploa
               fileInputRef.current.value = '';
             }
           }}
-          className="btn btn-secondary"
+          className="btn btn-secondary w-full sm:w-auto"
           disabled={isLoading}
         >
           Reset
         </button>
         <button
           type="submit"
-          className="btn btn-primary"
+          className="btn btn-primary w-full sm:w-auto"
           disabled={isLoading}
         >
           {isLoading && <LoadingSpinner size="sm" className="mr-2" />}

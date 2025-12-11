@@ -139,36 +139,37 @@ export const Entities = () => {
 
   return (
     <div className="space-y-6">
-      <div className="md:flex md:items-center md:justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+          <h2 className="text-2xl font-bold leading-7 text-gray-900 dark:text-gray-100 sm:text-3xl sm:truncate">
             Entities
           </h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Manage your entities and their categories
           </p>
         </div>
-        <div className="mt-4 flex md:mt-0 md:ml-4">
+        <div className="flex sm:mt-0">
           <button
             onClick={() => setIsCreateModalOpen(true)}
-            className="btn btn-primary"
+            className="btn btn-primary w-full sm:w-auto"
           >
             Create Entity
           </button>
         </div>
       </div>
 
-      <div className="bg-white shadow rounded-lg">
-        <div className="p-6">
+      <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
+        <div className="p-4 sm:p-6">
           <div className="mb-6">
-            <label htmlFor="search" className="block text-sm font-medium text-gray-700">
+            <label htmlFor="search" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
               Search Entities
             </label>
-            <div className="mt-1 relative">
+            <div className="relative">
               <input
                 type="text"
                 id="search"
-                className="input"
+                inputMode="search"
+                className="input w-full pr-10"
                 placeholder="Search by name, email, or phone..."
                 value={searchTerm}
                 onChange={(e) => handleSearchChange(e.target.value)}
@@ -191,23 +192,23 @@ export const Entities = () => {
           />
 
           {entitiesData && entitiesData.totalPages > 1 && (
-            <div className="mt-6 flex items-center justify-between">
-              <div className="text-sm text-gray-700">
+            <div className="mt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="text-sm text-gray-700 dark:text-gray-300 text-center sm:text-left">
                 Showing page {entitiesData.page} of {entitiesData.totalPages} 
                 ({entitiesData.total} total items)
               </div>
-              <div className="flex space-x-2">
+              <div className="flex gap-2">
                 <button
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
-                  className="btn btn-secondary disabled:opacity-50"
+                  className="btn btn-secondary disabled:opacity-50 flex-1 sm:flex-none"
                 >
                   Previous
                 </button>
                 <button
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, entitiesData.totalPages))}
                   disabled={currentPage === entitiesData.totalPages}
-                  className="btn btn-secondary disabled:opacity-50"
+                  className="btn btn-secondary disabled:opacity-50 flex-1 sm:flex-none"
                 >
                   Next
                 </button>

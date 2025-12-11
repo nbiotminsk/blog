@@ -98,19 +98,19 @@ export const Documents = () => {
 
   return (
     <div className="space-y-6">
-      <div className="md:flex md:items-center md:justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex-1 min-w-0">
-          <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+          <h2 className="text-2xl font-bold leading-7 text-gray-900 dark:text-gray-100 sm:text-3xl sm:truncate">
             Documents
           </h2>
-          <p className="mt-1 text-sm text-gray-500">
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
             Generate documents from templates and entities
           </p>
         </div>
-        <div className="mt-4 flex md:mt-0 md:ml-4">
+        <div className="flex sm:mt-0">
           <button
             onClick={() => setIsGenerateModalOpen(true)}
-            className="btn btn-primary"
+            className="btn btn-primary w-full sm:w-auto"
             disabled={!entities.length || !templates.length}
           >
             Generate Document
@@ -142,7 +142,7 @@ export const Documents = () => {
           {entities.length > 0 && templates.length > 0 && (
             <>
               <div>
-                <label htmlFor="entity-select" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="entity-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Select Entity *
                 </label>
                 <select
@@ -152,7 +152,7 @@ export const Documents = () => {
                     const entity = entities.find(en => en.id === e.target.value);
                     setSelectedEntity(entity || null);
                   }}
-                  className="input mt-1"
+                  className="input mt-1 w-full"
                 >
                   <option value="">Choose an entity</option>
                   {entities.map((entity) => (
@@ -164,7 +164,7 @@ export const Documents = () => {
               </div>
 
               <div>
-                <label htmlFor="template-select" className="block text-sm font-medium text-gray-700">
+                <label htmlFor="template-select" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                   Select Template *
                 </label>
                 <select
@@ -173,10 +173,9 @@ export const Documents = () => {
                   onChange={(e) => {
                     const template = templates.find(t => t.id === e.target.value);
                     setSelectedTemplate(template || null);
-                    // Reset payload when template changes
                     setPayloadData({});
                   }}
-                  className="input mt-1"
+                  className="input mt-1 w-full"
                 >
                   <option value="">Choose a template</option>
                   {templates.map((template) => (
@@ -190,21 +189,21 @@ export const Documents = () => {
               {selectedTemplate && selectedTemplate.placeholders.length > 0 && (
                 <div>
                   <div className="flex items-center justify-between mb-3">
-                    <label className="block text-sm font-medium text-gray-700">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                       Template Data
                     </label>
                     <button
                       onClick={() => setIsPreviewModalOpen(true)}
-                      className="text-sm text-blue-600 hover:text-blue-900"
+                      className="text-sm text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300"
                     >
                       Preview Template
                     </button>
                   </div>
                   
-                  <div className="space-y-4 max-h-96 overflow-y-auto border border-gray-200 rounded-lg p-4">
+                  <div className="space-y-4 max-h-96 overflow-y-auto border border-gray-200 dark:border-gray-700 rounded-lg p-4">
                     {selectedTemplate.placeholders.map((placeholder) => (
                       <div key={placeholder}>
-                        <label htmlFor={`placeholder-${placeholder}`} className="block text-sm font-medium text-gray-700">
+                        <label htmlFor={`placeholder-${placeholder}`} className="block text-sm font-medium text-gray-700 dark:text-gray-300">
                           {placeholder}
                         </label>
                         <input
@@ -212,7 +211,7 @@ export const Documents = () => {
                           id={`placeholder-${placeholder}`}
                           value={payloadData[placeholder] || ''}
                           onChange={(e) => handlePayloadChange(placeholder, e.target.value)}
-                          className="input mt-1"
+                          className="input mt-1 w-full"
                           placeholder={`Enter value for ${placeholder}`}
                         />
                       </div>
@@ -222,24 +221,24 @@ export const Documents = () => {
               )}
 
               {selectedTemplate && selectedTemplate.placeholders.length === 0 && (
-                <div className="bg-blue-50 border border-blue-200 rounded-md p-4">
-                  <p className="text-sm text-blue-700">
+                <div className="bg-blue-50 dark:bg-blue-900 border border-blue-200 dark:border-blue-700 rounded-md p-4">
+                  <p className="text-sm text-blue-700 dark:text-blue-200">
                     This template doesn't have any detected placeholders. A basic document will be generated.
                   </p>
                 </div>
               )}
 
-              <div className="flex justify-end space-x-3">
+              <div className="flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
                 <button
                   onClick={() => setIsGenerateModalOpen(false)}
-                  className="btn btn-secondary"
+                  className="btn btn-secondary w-full sm:w-auto"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleGenerateDocument}
                   disabled={!selectedEntity || !selectedTemplate || generateDocument.isPending}
-                  className="btn btn-primary"
+                  className="btn btn-primary w-full sm:w-auto"
                 >
                   {generateDocument.isPending && <LoadingSpinner size="sm" className="mr-2" />}
                   Generate Document
@@ -285,9 +284,9 @@ export const Documents = () => {
       </Modal>
 
       {/* Document Records */}
-      <div className="bg-white shadow rounded-lg">
-        <div className="p-6">
-          <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+      <div className="bg-white dark:bg-gray-800 shadow rounded-lg">
+        <div className="p-4 sm:p-6">
+          <h3 className="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100 mb-4">
             Generation History
           </h3>
           
