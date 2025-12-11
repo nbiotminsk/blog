@@ -8,6 +8,18 @@ const router = Router();
 /**
  * @swagger
  * /entities:
+ *   get:
+ *     summary: List entities
+ *     tags: [Entities]
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+router.get('/', EntityController.listEntities);
+
+/**
+ * @swagger
+ * /entities:
  *   post:
  *     summary: Create a new entity
  *     tags: [Entities]

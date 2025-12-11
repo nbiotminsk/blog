@@ -18,6 +18,10 @@ export class EntityRepository {
     return this.db('entities').where({ id }).first();
   }
 
+  async findAll(): Promise<Entity[]> {
+    return this.db('entities').orderBy('created_at', 'desc');
+  }
+
   async update(id: string, data: Partial<Entity>): Promise<Entity | undefined> {
     const [entity] = await this.db('entities').where({ id }).update(data).returning('*');
     return entity;
@@ -27,7 +31,7 @@ export class EntityRepository {
     await this.db('entities').where({ id }).delete();
   }
 
-  async findAll(limit: number, offset: number): Promise<{ data: Entity[]; total: number }> {
+  async findAllPaginated(limit: number, offset: number): Promise<{ data: Entity[]; total: number }> {
     const data = await this.db('entities').limit(limit).offset(offset).orderBy('created_at', 'desc');
     const result = await this.db('entities').count<{ count: string }[]>('id as count');
     const total = parseInt(result[0].count, 10);
