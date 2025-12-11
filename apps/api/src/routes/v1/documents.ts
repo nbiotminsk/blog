@@ -35,4 +35,48 @@ const router = Router();
  */
 router.post('/generate', validateBody(generateDocumentSchema), DocumentController.generateDocument);
 
+/**
+ * @swagger
+ * /documents:
+ *   get:
+ *     summary: List document records
+ *     tags: [Documents]
+ *     parameters:
+ *       - in: query
+ *         name: entity_id
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: template_id
+ *         schema:
+ *           type: string
+ *       - in: query
+ *         name: status
+ *         schema:
+ *           type: string
+ *           enum: [pending, processing, completed, failed]
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+router.get('/', DocumentController.listDocumentRecords);
+
+/**
+ * @swagger
+ * /documents/{id}:
+ *   get:
+ *     summary: Get document record
+ *     tags: [Documents]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Success
+ */
+router.get('/:id', DocumentController.getDocumentRecord);
+
 export default router;

@@ -1,0 +1,42 @@
+{
+  "name": "nikolai-monorepo",
+  "version": "0.1.0",
+  "description": "Nikolai Document Management System - Monorepo with API, Doc Service, and Web frontend",
+  "private": true,
+  "workspaces": [
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "echo 'Run npm run dev from individual apps: cd apps/api, cd apps/doc-service, or cd apps/web'",
+    "dev:api": "cd apps/api && npm run dev",
+    "dev:doc-service": "cd apps/doc-service && npm run dev",
+    "dev:web": "cd apps/web && npm run dev",
+    "build": "npm run build:api && npm run build:doc-service && npm run build:web",
+    "build:api": "cd apps/api && npm run build",
+    "build:doc-service": "cd apps/doc-service && npm run build",
+    "build:web": "cd apps/web && npm run build",
+    "lint": "npm run lint:api && npm run lint:doc-service && npm run lint:web",
+    "lint:api": "cd apps/api && npm run lint",
+    "lint:doc-service": "cd apps/doc-service && npm run lint",
+    "lint:web": "cd apps/web && npm run lint",
+    "format": "npm run format:api && npm run format:doc-service && npm run format:web",
+    "format:api": "cd apps/api && npm run format",
+    "format:doc-service": "cd apps/doc-service && npm run format",
+    "format:web": "cd apps/web && npm run format",
+    "typecheck": "npm run typecheck:api && npm run typecheck:doc-service && npm run typecheck:web",
+    "typecheck:api": "cd apps/api && npm run typecheck",
+    "typecheck:doc-service": "cd apps/doc-service && npm run typecheck",
+    "typecheck:web": "cd apps/web && npm run typecheck"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "document-management",
+    "templates",
+    "react",
+    "express",
+    "typescript",
+    "monorepo"
+  ]
+}

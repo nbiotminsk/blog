@@ -11,6 +11,10 @@ export class EntityService {
     this.entityCategoriesRepo = new EntityCategoriesRepository();
   }
 
+  async findAll(): Promise<Entity[]> {
+    return this.entityRepo.findAll();
+  }
+
   async create(data: Partial<Entity> & { categoryIds?: string[] }): Promise<Entity> {
     const { categoryIds, ...entityData } = data;
     const entity = await this.entityRepo.create(entityData);
