@@ -1,0 +1,120 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: nikolai-postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME:-nikolai}
+      POSTGRES_USER: ${DB_USER:-nikolai}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./apps/api/src/db/migrations:/docker-entrypoint-initdb.d
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    networks:
+      - nikolai-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-nikolai} -d ${DB_NAME:-nikolai}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: unless-stopped
+
+  # API Service
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+      target: production
+    container_name: nikolai-api
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 3002
+      DATABASE_URL: postgresql://${DB_USER:-nikolai}:${DB_PASSWORD:-password}@postgres:5432/${DB_NAME:-nikolai}
+      DOC_SERVICE_URL: http://doc-service:3001
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:3000}
+    volumes:
+      - uploads:/app/uploads
+    ports:
+      - "${API_PORT:-3002}:3002"
+    networks:
+      - nikolai-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: unless-stopped
+    command: sh -c "npm run migrate && npm run start"
+
+  # Document Service
+  doc-service:
+    build:
+      context: ./apps/doc-service
+      dockerfile: Dockerfile
+      target: production
+    container_name: nikolai-doc-service
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 3001
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+    volumes:
+      - templates:/app/templates
+      - generated:/app/generated
+    ports:
+      - "${DOC_SERVICE_PORT:-3001}:3001"
+    networks:
+      - nikolai-network
+    restart: unless-stopped
+
+  # Frontend Service
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+      target: production
+    container_name: nikolai-web
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    networks:
+      - nikolai-network
+    depends_on:
+      - api
+      - doc-service
+    restart: unless-stopped
+
+  # Database Migration Service (run once)
+  migrate:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+      target: production
+    container_name: nikolai-migrate
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      DATABASE_URL: postgresql://${DB_USER:-nikolai}:${DB_PASSWORD:-password}@postgres:5432/${DB_NAME:-nikolai}
+    networks:
+      - nikolai-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    profiles:
+      - migrate
+    command: sh -c "npm run migrate && npm run seed"
+
+volumes:
+  postgres_data:
+    driver: local
+  uploads:
+    driver: local
+  templates:
+    driver: local
+  generated:
+    driver: local
+
+networks:
+  nikolai-network:
+    driver: bridge
