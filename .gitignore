@@ -11,6 +11,8 @@ node_modules/
 .env.*
 apps/api/.env
 apps/api/.env.*
+apps/doc-service/.env
+apps/doc-service/.env.*
 
 # Logs
 npm-debug.log*
