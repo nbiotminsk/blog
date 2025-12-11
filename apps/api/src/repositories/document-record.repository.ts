@@ -181,4 +181,11 @@ export class DocumentRecordRepository {
     const [record] = await this.db('document_records').where({ id }).update(data).returning('*');
     return record;
   }
+
+  async reassignEntity(fromEntityId: string, toEntityId: string): Promise<number> {
+    const result = await this.db('document_records')
+      .where({ entity_id: fromEntityId })
+      .update({ entity_id: toEntityId });
+    return result;
+  }
 }
